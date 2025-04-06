@@ -22,8 +22,6 @@ interface ScrollSectionProps {
   id: string;
   className: string;
   children: ReactNode;
-  animateDirection?: string; // Optional property
-  delay?: number; // Optional property
 }
 
 const ScrollSection: React.FC<ScrollSectionProps> = ({
@@ -308,17 +306,13 @@ export default function Home() {
       
       return () => clearInterval(intervalId);
     }
-  }, [typingEffect.fullText, typingEffect.isTyping, activeSection === 'ai']);
+  }, [typingEffect.fullText, typingEffect.isTyping]);
 
   const handleVote = (section: string, value: 'ethical' | 'unethical') => {
     setVotes(prev => ({
       ...prev,
       [section]: value
     }));
-  };
-
-  const handleSectionChange = (id: string) => {
-    setActiveSection(id);
   };
 
   const handleAIConversationInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -815,7 +809,7 @@ export default function Home() {
                   {/* AI Ethics Vote Section */}
                   <div className="bg-tertiary/30 p-5 rounded-lg">
                     <h3 className="font-classic text-xl mb-4">What do you think?</h3>
-                    <p className="mb-6 font-serif">After exploring AI's benefits and risks, what's your stance?</p>
+                    <p className="mb-6 font-serif">After exploring AI&apos;s benefits and risks, what&apos;s your stance?</p>
                     
                     <div className="flex gap-4">
                       <motion.button 
