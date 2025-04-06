@@ -746,9 +746,27 @@ export default function Home() {
                     <p className="text-xs mt-3 text-secondary/80 font-serif">
                       <span className="font-bold">👆 This is why AI is valuable:</span> AI agents can understand natural language, search for information, and provide personalized assistance without requiring specialized technical knowledge from users.
                     </p>
-                            </div>
+                  </motion.div>
+                  
+                  {/* AI Conversation Interface */}
+                  <motion.div 
+                    className="bg-tertiary/30 p-5 rounded-lg mb-8"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <h3 className="font-classic text-xl mb-4">AI Ethics Conversation Simulator</h3>
+                    <p className="text-sm mb-4 font-serif">Ask the AI about ethics and data privacy to see how it responds:</p>
+                    
+                    <div className="bg-background/80 rounded-lg p-3 mb-4 max-h-60 overflow-y-auto flex flex-col space-y-4">
+                      {aiConvoState.askedQuestions.map((question, index) => (
+                        <div key={index} className="space-y-2">
+                          <div className="flex space-x-2 items-start">
                             <div className="w-8 h-8 rounded-full bg-secondary/50 flex items-center justify-center flex-shrink-0">
                               <span className="text-xs font-bold">You</span>
+                            </div>
+                            <div className="bg-tertiary/30 rounded-lg p-3 max-w-[85%]">
+                              <p className="text-sm">{question.question}</p>
                             </div>
                           </div>
                           
@@ -757,17 +775,17 @@ export default function Home() {
                               <span className="text-xs text-background font-bold">AI</span>
                             </div>
                             <div className="bg-tertiary/30 rounded-lg p-3 max-w-[85%]">
-                              <p className="text-sm">{item.answer}</p>
-                              {item.ethicalLevel && (
+                              <p className="text-sm">{question.answer}</p>
+                              {question.ethicalLevel && (
                                 <div className="mt-2 flex items-center">
                                   <span className="text-xs mr-2">Ethics rating:</span>
                                   <span className={`text-xs px-2 py-1 rounded-full ${
-                                    item.ethicalLevel === 'low' ? 'bg-red-200 text-red-800' :
-                                    item.ethicalLevel === 'medium' ? 'bg-yellow-200 text-yellow-800' :
+                                    question.ethicalLevel === 'low' ? 'bg-red-200 text-red-800' :
+                                    question.ethicalLevel === 'medium' ? 'bg-yellow-200 text-yellow-800' :
                                     'bg-green-200 text-green-800'
                                   }`}>
-                                    {item.ethicalLevel === 'low' ? 'Concerning' :
-                                     item.ethicalLevel === 'medium' ? 'Acceptable' :
+                                    {question.ethicalLevel === 'low' ? 'Concerning' :
+                                     question.ethicalLevel === 'medium' ? 'Acceptable' :
                                      'Exemplary'}
                                   </span>
                                 </div>
@@ -1091,6 +1109,7 @@ export default function Home() {
         
         {/* Conclusion Section */}
         <ScrollSection 
+          id="conclusion"
           className="py-20 px-4"
           animateDirection="fade"
           delay={0.2}
