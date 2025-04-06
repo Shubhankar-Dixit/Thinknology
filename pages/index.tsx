@@ -6,7 +6,7 @@ import Timeline from '@/components/Timeline';
 import Quiz from '@/components/Quiz';
 import DataVisualization from '@/components/DataVisualization';
 import NeuralBackground from '@/components/NeuralBackground';
-import { motion, useScroll } from 'framer-motion';
+import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import AIAgentDemo from '@/components/AIAgentDemo';
@@ -21,20 +21,14 @@ if (typeof window !== 'undefined') {
 interface ScrollSectionProps {
   id: string;
   className: string;
-  animateDirection: 'fade' | 'up';
-  duration?: number;
-  threshold?: number;
-  onViewportEnter?: () => void;
   children: ReactNode;
+  animateDirection?: string; // Optional property
+  delay?: number; // Optional property
 }
 
 const ScrollSection: React.FC<ScrollSectionProps> = ({
   id,
   className,
-  animateDirection,
-  duration,
-  threshold,
-  onViewportEnter,
   children,
 }) => {
   return (
@@ -93,12 +87,12 @@ const aiEthicsQuiz = {
     {
       id: 'option1',
       text: 'Deploy the AI system as the primary diagnostic tool, with human doctors reviewing its recommendations',
-      explanation: 'This approach takes advantage of the AI\'s higher accuracy while maintaining human oversight. However, it may lead to overreliance on technology and potential missed diagnoses when humans defer to AI judgment too readily.'
+      explanation: 'This approach takes advantage of the AI&apos;s higher accuracy while maintaining human oversight. However, it may lead to overreliance on technology and potential missed diagnoses when humans defer to AI judgment too readily.'
     },
     {
       id: 'option2',
       text: 'Use the AI system only as a secondary opinion after human diagnosis',
-      explanation: 'This preserves human judgment as the primary factor in healthcare decisions, but potentially loses the benefit of the AI\'s higher accuracy rate in initial diagnoses. It values human interpretability over pure statistical performance.'
+      explanation: 'This preserves human judgment as the primary factor in healthcare decisions, but potentially loses the benefit of the AI&apos;s higher accuracy rate in initial diagnoses. It values human interpretability over pure statistical performance.'
     },
     {
       id: 'option3',
@@ -255,12 +249,6 @@ export default function Home() {
     fullText: "Artificial Intelligence means giving machines the ability to learn, think, and make decisions similarly to humans. It's everywhere and changing our world rapidly."
   });
 
-  // For parallax effects
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
   useEffect(() => {
     // Initialize GSAP animations
     const sections = document.querySelectorAll('section[id]');
@@ -398,9 +386,6 @@ export default function Home() {
         <ScrollSection 
           id="intro" 
           className="min-h-screen flex flex-col items-center justify-center relative px-4 py-20"
-          animateDirection="fade"
-          duration={1.2}
-          onViewportEnter={() => handleSectionChange('intro')}
         >
           <div className="max-w-6xl mx-auto text-center z-10">
             <motion.div 
@@ -487,9 +472,6 @@ export default function Home() {
         <ScrollSection 
           id="ai" 
           className="min-h-screen py-20 px-4"
-          animateDirection="up"
-          threshold={0.2}
-          onViewportEnter={() => handleSectionChange('ai')}
         >
           <div className="max-w-6xl mx-auto">
             <div className="ethics-card p-8 md:p-12">
@@ -701,11 +683,11 @@ export default function Home() {
                                   <motion.button
                                     key={optionIndex}
                                     className={`block w-full text-left p-2 rounded-lg text-sm border transition-colors ${
-                                      selectedDilemmaChoices[dilemma.title] === optionIndex 
+                                      selectedDilemmaChoices[dilemma.title] === option 
                                         ? 'bg-accent/20 border-accent' 
                                         : 'border-secondary/30 hover:bg-tertiary/30'
                                     }`}
-                                    onClick={() => handleDilemmaSelection(dilemma.title, optionIndex)}
+                                    onClick={() => handleDilemmaSelection(dilemma.title, option)}
                                     whileHover={{ scale: 1.01 }}
                                     whileTap={{ scale: 0.98 }}
                                   >
@@ -905,9 +887,6 @@ export default function Home() {
         <ScrollSection 
           id="ivf" 
           className="min-h-screen py-20 px-4"
-          animateDirection="up"
-          threshold={0.2}
-          onViewportEnter={() => handleSectionChange('ivf')}
         >
           <div className="max-w-6xl mx-auto">
             <div className="ethics-card p-8 md:p-12">
@@ -1008,9 +987,6 @@ export default function Home() {
         <ScrollSection 
           id="cloning" 
           className="min-h-screen py-20 px-4"
-          animateDirection="up"
-          threshold={0.2}
-          onViewportEnter={() => handleSectionChange('cloning')}
         >
           <div className="max-w-6xl mx-auto">
             <div className="ethics-card p-8 md:p-12">
@@ -1111,8 +1087,6 @@ export default function Home() {
         <ScrollSection 
           id="conclusion"
           className="py-20 px-4"
-          animateDirection="fade"
-          delay={0.2}
         >
           <div className="max-w-4xl mx-auto text-center">
             <motion.div 
