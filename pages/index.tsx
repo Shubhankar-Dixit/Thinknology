@@ -2,20 +2,47 @@ import { useEffect, useRef, useState } from 'react';
 import Image from "next/image";
 import Head from 'next/head';
 import Footer from '@/components/Footer';
-import ScrollSection from '@/components/ScrollSection';
 import Timeline from '@/components/Timeline';
 import Quiz from '@/components/Quiz';
 import DataVisualization from '@/components/DataVisualization';
 import NeuralBackground from '@/components/NeuralBackground';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import AIAgentDemo from '@/components/AIAgentDemo';
+import React, { ReactNode } from 'react';
 
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
+
+// Adding missing JSX IntrinsicElements definitions
+interface ScrollSectionProps {
+  id: string;
+  className: string;
+  animateDirection: 'fade' | 'up';
+  duration?: number;
+  threshold?: number;
+  onViewportEnter?: () => void;
+  children: ReactNode;
+}
+
+const ScrollSection: React.FC<ScrollSectionProps> = ({
+  id,
+  className,
+  animateDirection,
+  duration,
+  threshold,
+  onViewportEnter,
+  children,
+}) => {
+  return (
+    <div id={id} className={className}>
+      {children}
+    </div>
+  );
+};
 
 // Sample timeline data
 const aiTimelineEvents = [
@@ -23,25 +50,25 @@ const aiTimelineEvents = [
     id: 'ai1',
     year: '1950',
     title: 'Turing Test Proposed',
-    description: 'Alan Turing proposes the "Imitation Game," now known as the Turing Test, which examines a machine\'s ability to exhibit intelligent behavior indistinguishable from a human.'
+    description: 'Alan Turing proposes the &quot;Imitation Game,&quot; now known as the Turing Test, which examines a machine&apos;s ability to exhibit intelligent behavior indistinguishable from a human.'
   },
   {
     id: 'ai2',
     year: '1956',
     title: 'Birth of AI as a Field',
-    description: 'John McCarthy coins the term "Artificial Intelligence" at the Dartmouth Conference, marking the formal birth of AI as a field of research.'
+    description: 'John McCarthy coins the term &quot;Artificial Intelligence&quot; at the Dartmouth Conference, marking the formal birth of AI as a field of research.'
   },
   {
     id: 'ai3',
     year: '1997',
     title: 'Deep Blue Defeats Chess Champion',
-    description: 'IBM\'s Deep Blue defeats world chess champion Garry Kasparov, marking the first time a computer defeated a reigning world chess champion.'
+    description: 'IBM&apos;s Deep Blue defeats world chess champion Garry Kasparov, marking the first time a computer defeated a reigning world chess champion.'
   },
   {
     id: 'ai4',
     year: '2011',
     title: 'IBM Watson Wins Jeopardy',
-    description: 'IBM\'s Watson defeats human champions on the quiz show Jeopardy!, demonstrating its advanced natural language processing capabilities.'
+    description: 'IBM&apos;s Watson defeats human champions on the quiz show Jeopardy!, demonstrating its advanced natural language processing capabilities.'
   },
   {
     id: 'ai5',
@@ -58,7 +85,7 @@ const aiEthicsQuiz = {
   context: `<p>AI healthcare systems present complex ethical considerations:</p>
   <ul>
     <li>Higher accuracy could save lives, but errors could also cause harm</li>
-    <li>The "black box" nature of some AI algorithms makes it difficult to understand why specific decisions are made</li>
+    <li>The &quot;black box&quot; nature of some AI algorithms makes it difficult to understand why specific decisions are made</li>
     <li>Patient data privacy must be balanced with the need for data to train these systems</li>
     <li>Human oversight might introduce bias or override beneficial AI decisions</li>
   </ul>`,
@@ -202,7 +229,6 @@ const aiFuturePerspectives = [
 ];
 
 export default function Home() {
-  const sectionsRef = useRef<HTMLDivElement[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState('intro');
   const [votes, setVotes] = useState({
@@ -212,17 +238,17 @@ export default function Home() {
   });
 
   const [aiConvoState, setAiConvoState] = useState({
-    currentQuestion: null,
-    askedQuestions: [],
+    currentQuestion: null as null | { question: string; answer: string; ethicalLevel: string },
+    askedQuestions: [] as { question: string; answer: string; ethicalLevel: string }[],
     showEthicsRating: false,
     userInput: ""
   });
   
-  const [activeDilemma, setActiveDilemma] = useState(null);
-  const [selectedDilemmaChoices, setSelectedDilemmaChoices] = useState({});
-  const [activeBiasCategory, setActiveBiasCategory] = useState(null);
-  const [activeAIPerspective, setActiveAIPerspective] = useState("The Cautious Pragmatist");
-  const [showResearchCard, setShowResearchCard] = useState(null);
+  const [activeDilemma, setActiveDilemma] = useState<number | null>(null);
+  const [selectedDilemmaChoices, setSelectedDilemmaChoices] = useState<Record<string, string>>({});
+  const [activeBiasCategory, setActiveBiasCategory] = useState<string | null>(null);
+  const [activeAIPerspective, setActiveAIPerspective] = useState<string | null>("The Cautious Pragmatist");
+  const [showResearchCard, setShowResearchCard] = useState<number | null>(null);
   const [typingEffect, setTypingEffect] = useState({
     isTyping: false,
     text: "",
@@ -234,10 +260,6 @@ export default function Home() {
     target: containerRef,
     offset: ["start start", "end end"]
   });
-  
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 0.8, 0.8, 0.2]);
 
   useEffect(() => {
     // Initialize GSAP animations
@@ -298,7 +320,7 @@ export default function Home() {
       
       return () => clearInterval(intervalId);
     }
-  }, [activeSection === 'ai']);
+  }, [typingEffect.fullText, typingEffect.isTyping, activeSection === 'ai']);
 
   const handleVote = (section: string, value: 'ethical' | 'unethical') => {
     setVotes(prev => ({
@@ -311,7 +333,7 @@ export default function Home() {
     setActiveSection(id);
   };
 
-  const handleAIConversationInput = (e) => {
+  const handleAIConversationInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAiConvoState(prev => ({
       ...prev,
       userInput: e.target.value
@@ -334,14 +356,14 @@ export default function Home() {
     }));
   };
 
-  const handleDilemmaSelection = (dilemmaTitle, choice) => {
+  const handleDilemmaSelection = (dilemmaTitle: string, choice: string) => {
     setSelectedDilemmaChoices(prev => ({
       ...prev,
       [dilemmaTitle]: choice
     }));
   };
 
-  const toggleAIPerspective = (persona) => {
+  const toggleAIPerspective = (persona: string) => {
     setActiveAIPerspective(prev => prev === persona ? null : persona);
   };
 
@@ -724,33 +746,6 @@ export default function Home() {
                     <p className="text-xs mt-3 text-secondary/80 font-serif">
                       <span className="font-bold">👆 This is why AI is valuable:</span> AI agents can understand natural language, search for information, and provide personalized assistance without requiring specialized technical knowledge from users.
                     </p>
-                  </motion.div>
-                  
-                  {/* AI Conversation Simulator */}
-                  <motion.div 
-                    className="bg-tertiary/30 p-5 rounded-lg mb-8"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <h3 className="font-classic text-xl mb-4">Experience AI Conversation</h3>
-                    <p className="text-sm mb-4 font-serif">Interact with an AI assistant to see how it handles ethical questions:</p>
-                    
-                    <div className="border border-secondary rounded-lg bg-background/80 p-4 h-56 overflow-y-auto mb-4 flex flex-col">
-                      <div className="flex space-x-2 items-start mb-4">
-                        <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                          <span className="text-xs text-background font-bold">AI</span>
-                        </div>
-                        <div className="bg-tertiary/30 rounded-lg p-3 max-w-[85%]">
-                          <p className="text-sm">{aiConversationData.introMessage}</p>
-                        </div>
-                      </div>
-                      
-                      {aiConvoState.askedQuestions.map((item, index) => (
-                        <div key={index} className="space-y-4">
-                          <div className="flex space-x-2 justify-end">
-                            <div className="bg-accent/20 rounded-lg p-3 max-w-[85%]">
-                              <p className="text-sm">{item.question}</p>
                             </div>
                             <div className="w-8 h-8 rounded-full bg-secondary/50 flex items-center justify-center flex-shrink-0">
                               <span className="text-xs font-bold">You</span>

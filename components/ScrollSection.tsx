@@ -1,123 +1,52 @@
-import React, { useEffect, useRef } from 'react';
-import { motion, useInView, useAnimation, Variants } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import React, { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
-type AnimationDirection = 'up' | 'down' | 'left' | 'right' | 'fade';
-
-interface ScrollSectionProps {
-  children: React.ReactNode;
+export interface ScrollSectionProps {
   id?: string;
   className?: string;
-  animateDirection?: AnimationDirection;
-  delay?: number;
-  duration?: number;
+  animateDirection?: 'up' | 'down' | 'left' | 'right' | 'fade';
   threshold?: number;
-  staggerChildren?: boolean;
-  staggerDelay?: number;
-  pinned?: boolean;
+  delay?: number;
   onViewportEnter?: () => void;
-  preload?: boolean;
+  children: ReactNode;
 }
 
-const sectionVariants: Record<AnimationDirection, Variants> = {
-  up: {
-    hidden: { y: 100, opacity: 0 },
-    visible: { y: 0, opacity: 1 }
-  },
-  down: {
-    hidden: { y: -100, opacity: 0 },
-    visible: { y: 0, opacity: 1 }
-  },
-  left: {
-    hidden: { x: 100, opacity: 0 },
-    visible: { x: 0, opacity: 1 }
-  },
-  right: {
-    hidden: { x: -100, opacity: 0 },
-    visible: { x: 0, opacity: 1 }
-  },
-  fade: {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 }
-  }
-};
-
-export const ScrollSection: React.FC<ScrollSectionProps> = ({ 
-  children, 
-  id, 
-  className = '', 
-  animateDirection = 'up', 
-  delay = 0, 
-  duration = 0.8,
-  threshold = 0.3,
-  staggerChildren = false,
-  staggerDelay = 0.15,
-  pinned = false,
+const ScrollSection: React.FC<ScrollSectionProps> = ({
+  id,
+  className = '',
+  animateDirection = 'up',
+  threshold = 0.1,
+  delay = 0,
   onViewportEnter,
-  preload = true
+  children
 }) => {
-  const controls = useAnimation();
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { 
-    once: false, 
-    amount: threshold,
-    margin: preload ? "500px 0px 0px 0px" : "0px"  // Preload content before it enters viewport
-  });
-
-  useEffect(() => {
-    if (isInView) {
-      controls.start('visible');
-      if (onViewportEnter) onViewportEnter();
+  const variants = {
+    hidden: {
+      opacity: 0,
+      y: animateDirection === 'up' ? 50 : animateDirection === 'down' ? -50 : 0,
+      x: animateDirection === 'left' ? 50 : animateDirection === 'right' ? -50 : 0,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      x: 0,
+      transition: {
+        duration: 0.8,
+        ease: 'easeOut',
+        delay: delay
+      }
     }
-  }, [isInView, controls, onViewportEnter]);
-
-  useEffect(() => {
-    if (pinned && ref.current) {
-      const pinSetting = ScrollTrigger.create({
-        trigger: ref.current,
-        start: "top top",
-        end: "bottom top",
-        pin: true,
-        pinSpacing: false
-      });
-      
-      return () => {
-        pinSetting.kill();
-      };
-    }
-  }, [pinned]);
-
-  // Initialize content on mount for IVF and cloning sections
-  useEffect(() => {
-    if (id === 'ivf' || id === 'cloning') {
-      // Add a small delay so main content loads first
-      const timer = setTimeout(() => {
-        controls.start('visible');
-      }, 1000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [id, controls]);
+  };
 
   return (
     <motion.section
       id={id}
-      ref={ref}
-      className={`${className} relative overflow-hidden`}
+      className={className}
       initial="hidden"
-      animate={controls}
-      variants={sectionVariants[animateDirection]}
-      transition={{ 
-        duration: duration, 
-        delay: delay,
-        ease: "easeOut",
-        staggerChildren: staggerChildren ? staggerDelay : 0
-      }}
+      whileInView="visible"
+      viewport={{ once: true, threshold }}
+      variants={variants}
+      onViewportEnter={onViewportEnter}
     >
       {children}
     </motion.section>

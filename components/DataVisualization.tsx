@@ -24,6 +24,10 @@ interface DataVisualizationProps {
   interactive?: boolean;
 }
 
+interface SVGEvent {
+  currentTarget: SVGElement;
+}
+
 const DataVisualization: React.FC<DataVisualizationProps> = ({
   data,
   type,
@@ -80,7 +84,7 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Default color scale
-    const colorScale = d3.scaleOrdinal()
+    const colorScale = d3.scaleOrdinal<string>()
       .domain(data.map(d => d.id))
       .range(data.map(d => d.color || '#8c7851'));
 
@@ -113,18 +117,18 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({
         .join("rect")
         .attr("x", d => x(d.label) || 0)
         .attr("width", x.bandwidth())
-        .attr("fill", d => colorScale(d.id) as string)
+        .attr("fill", d => colorScale(d.id))
         .attr("stroke", "white")
         .attr("rx", 3)
-        .on("mouseover", function(event, d) {
+        .on("mouseover", function(this: SVGElement, event: MouseEvent, d: DataPoint) {
           if (interactive) {
             d3.select(this).attr("fill", "#d97941");
             setActivePoint(d.id);
           }
         })
-        .on("mouseout", function(event, d) {
+        .on("mouseout", function(this: SVGElement, event: MouseEvent, d: DataPoint) {
           if (interactive) {
-            d3.select(this).attr("fill", colorScale(d.id) as string);
+            d3.select(this).attr("fill", colorScale(d.id));
             setActivePoint(null);
           }
         });
@@ -162,16 +166,16 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({
         .data(pie(data))
         .enter()
         .append("path")
-        .attr("fill", d => colorScale(d.data.id) as string)
+        .attr("fill", d => colorScale(d.data.id))
         .attr("stroke", "white")
         .style("stroke-width", "2px")
-        .on("mouseover", function(event, d) {
+        .on("mouseover", function(this: SVGElement, event: MouseEvent, d: d3.PieArcDatum<DataPoint>) {
           if (interactive) {
             d3.select(this).attr("opacity", 0.8).attr("transform", "scale(1.05)");
             setActivePoint(d.data.id);
           }
         })
-        .on("mouseout", function(event, d) {
+        .on("mouseout", function(this: SVGElement, event: MouseEvent, d: d3.PieArcDatum<DataPoint>) {
           if (interactive) {
             d3.select(this).attr("opacity", 1).attr("transform", "scale(1)");
             setActivePoint(null);
@@ -249,18 +253,18 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({
         .attr("cx", d => x(d.label) || 0)
         .attr("cy", d => y(d.value))
         .attr("r", 6)
-        .attr("fill", d => colorScale(d.id) as string)
+        .attr("fill", d => colorScale(d.id))
         .attr("stroke", "white")
         .attr("stroke-width", 2)
-        .on("mouseover", function(event, d) {
+        .on("mouseover", function(this: SVGElement, event: MouseEvent, d: DataPoint) {
           if (interactive) {
             d3.select(this).attr("r", 8).attr("fill", "#d97941");
             setActivePoint(d.id);
           }
         })
-        .on("mouseout", function(event, d) {
+        .on("mouseout", function(this: SVGElement, event: MouseEvent, d: DataPoint) {
           if (interactive) {
-            d3.select(this).attr("r", 6).attr("fill", colorScale(d.id) as string);
+            d3.select(this).attr("r", 6).attr("fill", colorScale(d.id));
             setActivePoint(null);
           }
         });
