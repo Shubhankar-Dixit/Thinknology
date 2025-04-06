@@ -1,0 +1,146 @@
+/* Animation styles for the immersive dilemma experience */
+
+/* Cursor blinking animation for typewriter effect */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.typewriter-cursor {
+  animation: blink 1s infinite;
+}
+
+/* Gentle floating animation for decorative elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Pulse animation for buttons and interactive elements */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Page transition animations */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 500ms, transform 500ms;
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit-active {
+  opacity: 0;
+  transition: opacity 500ms;
+}
+
+/* Dilemma scene transitions */
+.dilemma-scene-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.dilemma-scene-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 500ms, transform 500ms;
+}
+
+.dilemma-scene-exit {
+  opacity: 1;
+}
+
+.dilemma-scene-exit-active {
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Choice card hover effects */
+.choice-card {
+  transition: all 0.3s ease;
+}
+
+.choice-card:hover:not(.disabled) {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.choice-card.selected {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent-light);
+}
+
+/* Progress bar animation */
+@keyframes progress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.progress-animate {
+  animation: progress 1.5s ease-out forwards;
+}
+
+/* Button glow effect */
+@keyframes glow {
+  0% { box-shadow: 0 0 5px var(--color-accent); }
+  50% { box-shadow: 0 0 20px var(--color-accent); }
+  100% { box-shadow: 0 0 5px var(--color-accent); }
+}
+
+.glow-button {
+  animation: glow 2s infinite;
+}
+
+/* Background gradient animation */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient {
+  background: linear-gradient(-45deg, var(--color-background), var(--color-tertiary), var(--color-accent-light), var(--color-background));
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* Fade in for statistics and results */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 1s forwards;
+}
+
+/* Sequence for stats appearance */
+.stats-item {
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+.stats-delay-1 { animation-delay: 0.2s; }
+.stats-delay-2 { animation-delay: 0.4s; }
+.stats-delay-3 { animation-delay: 0.6s; }
+.stats-delay-4 { animation-delay: 0.8s; }
+.stats-delay-5 { animation-delay: 1s; }

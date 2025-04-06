@@ -1,26 +1,277 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;500;700&family=Space+Mono&family=Bitter:ital@0;1&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f5f0; /* Cream */
+  --foreground: #332a20; /* Dark brown */
+  --accent: #8c7851; /* Medium brown */
+  --secondary: #c6b499; /* Light brown */
+  --tertiary: #e5ded3; /* Light beige */
+  --highlight: #d97941; /* Rust accent */
+  
+  /* Font families */
+  --font-modern: 'Outfit', sans-serif;
+  --font-classic: 'Cormorant', serif;
+  --font-mono: 'Space Mono', monospace;
+  --font-serif: 'Bitter', serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-modern);
+  --font-mono: var(--font-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #282218; /* Dark brown */
+    --foreground: #f3efe8; /* Light cream */
+    --accent: #c4b6a6; /* Lighter brown */
+    --secondary: #8c7851; /* Medium brown */
+    --tertiary: #463c30; /* Dark beige */
+    --highlight: #e8985c; /* Lighter rust */
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-modern);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Enhanced smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+/* Hide scrollbar for clean UI but keep functionality */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes rotateIn {
+  from { transform: rotate(-10deg) scale(0.9); opacity: 0; }
+  to { transform: rotate(0) scale(1); opacity: 1; }
+}
+
+@keyframes drawLine {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.slide-up {
+  animation: slideUp 0.8s ease forwards;
+}
+
+.slide-in {
+  animation: slideIn 0.8s ease forwards;
+}
+
+.float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.rotate-in {
+  animation: rotateIn 0.8s ease-out forwards;
+}
+
+.draw-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawLine 2s ease forwards;
+}
+
+.delay-200 { animation-delay: 200ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-800 { animation-delay: 800ms; }
+.delay-1000 { animation-delay: 1000ms; }
+
+/* Typography Classes */
+.font-modern { font-family: var(--font-modern); }
+.font-classic { font-family: var(--font-classic); }
+.font-mono { font-family: var(--font-mono); }
+.font-serif { font-family: var(--font-serif); }
+
+/* Reveal animations on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animated content class for GSAP targeting */
+.animate-content {
+  will-change: transform, opacity;
+}
+
+/* DataVisualization component styles */
+.data-visualization .chart-container {
+  position: relative;
+}
+
+.data-visualization .data-bar {
+  transition: height 1s ease;
+}
+
+.tooltip {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Timeline component styles */
+.timeline-line {
+  transform-origin: left;
+}
+
+.timeline-dot {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.timeline-dot:hover {
+  transform: scale(1.2);
+}
+
+.event-details {
+  min-height: 150px;
+  position: relative;
+}
+
+/* Quiz component styles */
+.quiz-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.quiz-container > div {
+  min-height: 300px;
+}
+
+/* Voting components */
+.vote-button {
+  transition: all 0.3s ease;
+}
+
+.vote-button:hover {
+  transform: translateY(-5px);
+}
+
+.vote-button.selected {
+  border-color: var(--highlight);
+  background-color: var(--tertiary);
+}
+
+/* Ethics progress bar */
+.ethics-progress {
+  height: 6px;
+  background: var(--tertiary);
+  border-radius: 3px;
+  margin: 8px 0;
+  overflow: hidden;
+}
+
+.ethics-progress-bar {
+  height: 100%;
+  background: var(--highlight);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* Card styles */
+.ethics-card {
+  background: var(--background);
+  border: 1px solid var(--tertiary);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.ethics-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+}
+
+/* Gradient background option for sections */
+.gradient-bg {
+  background: linear-gradient(
+    135deg,
+    var(--background) 0%,
+    var(--tertiary) 100%
+  );
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+  .timeline {
+    padding: 0 10px;
+  }
+  
+  .ethics-card {
+    padding: 16px;
+  }
+  
+  .ethics-card:hover {
+    transform: none;
+  }
 }
